@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 # !/usr/bin/ruby
+# rubocop: disable Metrics/LineLength
 require 'rss'
 
-EMAIL    = ENV.fetch('GORAILS_EMAIL')
-PASSWORD = ENV.fetch('GORAILS_PASSWORD')
-OLD_EPISODE = 183
+EMAIL    = ENV.fetch('GORAILS_EMAIL', '')
+PASSWORD = ENV.fetch('GORAILS_PASSWORD', '')
+OLD_EPISODE = ARGV[0].to_i || 0
 
 puts 'GoRails Downloader'
 
