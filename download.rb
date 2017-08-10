@@ -10,10 +10,15 @@ OLD_EPISODE = ARGV[0].to_i || 0
 
 puts 'GoRails Downloader'
 
-rss_string = open(
-  'https://gorails.com/episodes/pro.rss',
-  http_basic_authentication: [EMAIL, PASSWORD]
-).read
+begin
+  rss_string = open(
+      'https://gorails.com/episodes/pro.rss',
+      http_basic_authentication: [EMAIL, PASSWORD]
+  ).read
+rescue OpenURI::HTTPError => error
+  puts error.io.status
+  abort
+end
 
 rss = RSS::Parser.parse(rss_string, false)
 
@@ -29,7 +34,7 @@ end.reverse
 
 puts "Found #{videos_urls.size} videos on GoRails"
 
-videos_urls.reject! { |k| k[:episode].to_i <= OLD_EPISODE } # remove old edisode
+videos_urls.reject! { |k| k[:episode].to_i <= OLD_EPISODE } # remove old episode
 
 videos_filenames = videos_urls.map { |k| k[:episode] + '-' + k[:filename] }
 existing_filenames = Dir.glob('**{,/*/**}/*.mp4').map { |f| f.gsub('videos/', '') }
